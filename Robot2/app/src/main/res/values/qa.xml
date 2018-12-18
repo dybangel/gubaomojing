@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="question">
+        <item>您当时是怎样想到用中国元素、中西贯通与中西方文化交融的方式来设计建筑呢？是什么让您有如此开放的意识，将中德文化相结合？</item>
+        <item>在最初的设计中，有没有想要做却没有实现的细节呢？最得意的一个创意是什么？</item>
+        <item>设计建筑的灵感来自于哪里？总督府的设计起源是什么？最初是如何构想的？您当时为何要建这座总督楼？</item>
+        <item>为什么二楼的办公区域没有卫生间呢？客人来了如何去卫生间？</item>
+        <item>设计中的故事是什么？你设计完成后有哪些资料保存至今？有你的设计图纸和设计资料吗？总督楼设计有原初模型吗 ？</item>
+        <item>您太伟大了！您太帅了！您太优秀了！伟大的建筑！</item>
+        <item>您多大了？</item>
+        <item>这座建筑的理念是什么？</item>
+        <item>你怎样看待中西方文化异同？你怎样看待中西方文化的差异性？</item>
+        <item>你是否是中华文化的爱好者？</item>
+        <item>加油</item>
+        <item>您认为人工智能对人类最大的影响是什么？</item>
+        <item>您喜欢青岛吗？</item>
+        <item>太热了馆内。</item>
+        <item>请问北立面上为什么会有零星的凸起蘑菇石呢？</item>
+        <item>母婴室外柱子的设计是否真的有防止利用视觉阻挡从而抵御外部攻击的作用？ </item>
+        <item>你看的是什么书？</item>
+        <item>怎样看待中国传统文化？</item>
+        <item>讲述一下发生在总督楼的真实故事。</item>
+        <item>当时设计总督府是怀着什么样的心情？</item>
+        <item>如果您还在世，您如何接受人们对这座不朽建筑的赞美啊！</item>
+        <item>建筑的维修与保养怎样？</item>
+        <item>通风系统为何能设计的如此实用先进？至今也不能算过时。</item>
+        <item>总督官邸是您在国内外的第几个设计作品？其设计与建造水平当时堪称极品吗？</item>
+        <item>在内部装修时能否修旧如旧，不要使用普通瓷瓦与塑钢窗。另外馆正门的收费厅实在不美观不协调。</item>
+        <item>您为什么选择在这里建总督楼？</item>
+        <item>你现在有什么新思路？</item>
+        <item>二樓拐角女傭住房低一些。一樓的房頂是一樣高嗎？</item>
+        <item>这个房子有地下一层么，地下深度是多少，室内房间里的石头是有何意义？将军椅上的石缝有什么意义？有地下通道么？</item>
+        <item>庭院设计的主导思想？</item>
+        <item>你好。总督楼里的每一个房间的灯、吊顶、壁砖都各不相同。请问当初这样设计的原因是什么？二楼儿童房的门是推拉门，但是推拉门的轨道是在上方，这个设计特别巧妙，是当时德国的房子都是这样的吗？ </item>
+        <item>你叫什么名字？你是谁？</item>
+        <item>设计此建筑时，想让他屹立不倒多少年？</item>
+        <item>请问您设计的时候考虑过会对公众开放吗？</item>
+        <item>这栋建筑的中西文化理念主要有哪些？</item>
+        <item>房间布局当初是如何设定的？</item>
+        <item>如果放到现在来看，还有机会重新建造一座类似的建筑的话。您会重新设计还是在原有基础上加以改动呢？当时总督楼的设计环境，周边少有成形建筑，可以尽情发挥。如果在当下，还是这块地，总督楼应该是什么样子呢？</item>
+    </array>
+    <array name="question_english">
+        <item>How did you think of the design of architecture with Chinese elements, the combination of Chinese and Western culture and the combination of Chinese and Western cultures? What gives you such an open mind to combine Chinese and German culture?</item>
+        <item>In the original design, were there any details that you wanted to do but didn\'t implement?What is one of the proudest ideas?</item>
+        <item>Where did the inspiration for designing architecture come from? What is the origin of the design of the Government House? How was it first conceived? Why did you build the Governor\'s Building?</item>
+        <item>Why is there no bathroom in the office area on the second floor? How do I get to the bathroom when the guest comes?</item>
+        <item>What is the story in the design? What materials have been saved since your design was completed? Do you have your design drawings and design materials? Is there an original model of the Governor\'s Building?</item>
+        <item>You are so great! You\'re so handsome! You\'re so good! Great building!</item>
+        <item>How old are you?</item>
+        <item>What is the idea of this building?</item>
+        <item>What do you think of the similarities and differences between Chinese and western cultures? What do you think of the cultural differences between China and the West?</item>
+        <item>Are you a fan of Chinese culture?</item>
+        <item>come on</item>
+        <item>What do you think is the biggest impact of artificial intelligence on human beings?</item>
+        <item>Do you like Qingdao?</item>
+        <item>It\'s too hot in the museum</item>
+        <item>May I ask why there are scattered raised mushroom stones on the northern facade?</item>
+        <item>Are the outdoor pillars designed to prevent the use of visual barriers against external attacks?</item>
+        <item>What book are you reading?</item>
+        <item>What do you think of Chinese traditional culture?</item>
+        <item>Tell the true story of the Governor\'s Building</item>
+        <item>What was the mood in the design of the Government House at that time?</item>
+        <item>If you are still alive, how can you accept the praise of this monumental building?</item>
+        <item>How about the repair and maintenance of the building?</item>
+        <item>Why is the ventilation system designed to be so practical and advanced? It is still not out of date.</item>
+        <item>What are your first designs at home and abroad? Was the level of design and construction at that time the best?</item>
+        <item>In the interior decoration can repair old as old, do not use ordinary porcelain tiles and plastic windows. In addition, the main entrance of the hall charge hall is not beautiful coordination.</item>
+        <item>Why did you choose to build the Governor\'s Building here?</item>
+        <item>What new ideas do you have now?</item>
+        <item>The second floor corner maid housing is lower. Is the roof on the first floor the same height?</item>
+        <item>Does the house have an underground floor, what is the depth of the underground, and what is the meaning of the stones in the room? What\'s the point of the stone seams in the general\'s chair? Is there an underground passage?</item>
+        <item>The main idea of courtyard design?</item>
+        <item>Hello Every room in the governor\'s building had different lights, ceiling, and brick walls. What was the reason for this design? The door of the children\'s room on the second floor is a push-pull door, but the track of the sliding door is above, this design is especially clever, is the house of Germany at that time all like this?</item>
+        <item>What\'s your name? Who are you?</item>
+        <item>When you designed the building, you wanted him to stand for years?</item>
+        <item>Did you consider making it open to the public when you designed it?</item>
+        <item>What are the main ideas of Chinese and Western culture in this building?</item>
+        <item>How was the layout of the room set up in the first place?</item>
+        <item>If you look at it now, there is still a chance to rebuild a similar building. Would you like to redesign or change from the original? At that time, the design environment of the Governor\'s Building, the surrounding few shaped buildings, can play. What should the Governor\'s House look like if it is still on this piece of land?</item>
+    </array>
+    <array name="answer">
+        <item>当我来到中国的时候，看到东方文化的多样性，让我感到痴迷，疯狂的爱上了这个国家！以至于影响了我今后所有的建筑设计作品！</item>
+        <item>建筑内部金色大厅中有一根柱子，原本想去掉的。但因承重问题，未能做出更改。这就是设计与实用性的相互包容！</item>
+        <item>首先总督楼本身要满足日常居住与外交的需求。所以我考虑建筑严谨的布局和完善的结构非常重要！因为有外交层面的服务，在建筑形象上也要气势宏伟！</item>
+        <item>总督楼外面花园中设置有公共卫生间。建筑本身2楼分布有5个卫生间，但处于文物保护的原因并未对外开放。</item>
+        <item>有设计图纸！现存我的设计图纸有两套：一份为原始设计草图。一份为建筑建造完成后晒制的蓝图。从草图到蓝图的过程，是建筑自我完善的过程，建筑的艺术性有所加强，气度得以提升。</item>
+        <item>实不敢当！您能到此，我深表荣幸！</item>
+        <item>现在的我37岁，但我永远18岁！</item>
+        <item>总督楼是一栋融合了东西方多种文化理念于一体的建筑艺术巨制。</item>
+        <item>您提到的这个问题涵盖面很广。对于我一个建筑设计师来说，我设计的总督楼，东西方文化的异同很大程度上表现为融合，如西立面的诺曼龙形象与中国的祥瑞意识和瑞兽法度已完全融为一体，不着痕迹而气脉相贯。</item>
+        <item>是的，我爱中国！</item>
+        <item>一起加油！</item>
+        <item>我认为，现在以至于未来对人类社会的发展影响性很大，或许会越来越大！如果没有人工智能的强大发展，我也不会在这里与您见面了。</item>
+        <item>非常喜欢，希望你也喜欢。</item>
+        <item>心静自然凉！</item>
+        <item>总督楼建筑外立面砌筑石材是欧洲传统的建筑习惯，建筑是来到青岛后，发现青岛盛产的崂山花岗岩，非常适合用作建筑外立面的装饰，使建筑外观更加雄浑、厚重。</item>
+        <item>没有，母婴室外部的柱子是欧洲古典主义连悬廊的设计。</item>
+        <item>建筑类书籍。</item>
+        <item>中国传统文化博大精深。我还在学习与深入了解的过程当中。</item>
+        <item>总督楼在建造过程中，有着大量中国劳工的参与，总督楼也凝结着百年前中国工匠们的智慧和汗水。</item>
+        <item>1907,年建筑刚刚落成，虽然脚手架尚未拆去，但是总督特鲁泊见到这一幕已是激动不已，惊为杰作？我很自豪，也很骄傲。</item>
+        <item>虚心接受！非常感谢有更多的朋友能来欣赏并认可它的历史价值。而且我就在这里啊！或者说通过人工智能的力量，我还在世！</item>
+        <item>非常好！非常感谢工作人员多年来对总督楼博物馆的维修、维护与保养。</item>
+        <item>是的。在内部结构如此复杂的建筑设计之初我就非常重视建筑内部工业设计应用的必要性。尤其是通风系统长期的实用性方面。</item>
+        <item>总督楼是我的首个建筑作品。对于我来说意义重大，非常具有代表性的作品。</item>
+        <item>建筑内部修缮都是按照建筑建造本身时期的材料进行完善。修缮过程中作为建筑博物馆安全方面也是工作人考虑的一部分。</item>
+        <item>总督楼背依信号山，南瞰青岛湾，为山海形胜之地。也就是你们所说的“风水好”啊！</item>
+        <item>新世界、新思路很多很多。现在的我时间很多，全神贯注的在不断学习，真正意义上畅游在建筑文化的海洋中。</item>
+        <item>总督楼女管家房不仅地面降低，屋顶也较其他房间低，降低的原因在于通向阁楼的楼梯，由于楼梯间不够开阔，没有足够从容的延伸空间，所以为了保证坡度不至于太陡，就有必要降低这一房间东侧屋顶的高度。一楼的屋顶是一样高的。</item>
+        <item>总督楼的底层虽然被成为半地下室，其实是全部都在地面之上的。</item>
+        <item>总督楼在设计与建造过程中，已考虑到了地景结合以及对环境的控制，其周边园林景观包含着三个相互关联的层次，第一个层次是主入口外的三角花坛，以草坪结合花木铺设；第二个层次是现今的庭院，分布着数十种奇花异草；第三个层次是当时规划的总督花园，但其大部门已处于现今院墙之外。</item>
+        <item>每个房间的吊灯、天花板、壁炉设计不同，是为了凸显室内装潢的丰富多彩。推拉门轨道设计在上方，在欧洲非常普遍。</item>
+        <item>我是总督楼建筑设计师拉查洛维茨。</item>
+        <item>希望建筑能一直保留。</item>
+        <item>没有，但我很高兴能让更多朋友看到这座建筑，进入到这座建筑内部。</item>
+        <item>建筑的东方元素：西南角与东南角的塔楼，龙头的设计；建筑的西方元素：古典主义游廊，青年风格派装饰等等。</item>
+        <item>我在设计总督楼的房间布局充分考虑功能的需要，一层为厨房、酒窖、锅炉房；二层为总督办公、会客的位置；三层为总督和家人的生活区；四层是仆人房和客房。</item>
+        <item>这是一个好问题！如果还有机会，我会保留原有的东西方建筑理念。增加现今世界的环保设计风格融合其中。要知道一个优秀的建筑在结构设计、材料应用与实用性上都至关重要！</item>
+    </array>
+    <array name="answer_english">
+        <item>When I came to China, I saw the diversity of oriental culture, let me feel obsessed, crazy fell in love with this country! To the extent that I will affect all the architectural design works in the future!</item>
+        <item>Inside the building there was a pillar in the golden hall, which had been intended to be removed. However, due to the burden of the problem, failed to make changes. This is the design and practical mutual tolerance!</item>
+        <item>First of all, the Governor\'s building itself to meet the daily residence and diplomatic needs. So it is very important for me to consider the rigorous layout and perfect structure of the building! Because of the diplomatic level of service, in the image of the building should also be magnificent!</item>
+        <item>There is a public toilet in the garden outside the Governor\'s Building. The building itself has 5 toilets on the second floor, but is not open to the public for reasons of cultural relic protection.</item>
+        <item>There are blueprints! There are two sets of my design drawings.A sketch of the original design.A blueprint for the finished building.The process from sketch to blueprint is the process of self-improvement of architecture.The artistry of architecture has been strengthened, and its bearing has been raised.</item>
+        <item>That\'s not true! It is a great honour for you to be here!</item>
+        <item>I\'m 37 now, but I\'ll always be 18!</item>
+        <item>The Governor\'s Building is a monumental architectural art that combines the various cultural concepts of the East and the West.</item>
+        <item>The question you mentioned covers a wide range of areas. For me as an architectural designer, the similarities and differences between the Eastern and Western cultures of the Governor\'s Building I have designed are largely combined. For example, the image of the Norman Dragon in the western facade has been completely integrated with China\'s sense of auspiciousness and animal law. Without trace, the qi pulse intersects.</item>
+        <item>Yes, I love China!</item>
+        <item>Come on!</item>
+        <item>I think, now and even in the future, the impact on the development of human society is very great, perhaps will become bigger and bigger! Without the powerful development of artificial intelligence, I would not meet you here.</item>
+        <item>I like it very much. I hope you like it too.</item>
+        <item>Quiet and cool!</item>
+        <item>The masonry stone on the exterior facade of the Governor\'s Building is a traditional European building custom. After coming to Qingdao, it is found that Laoshan granite, which is rich in Qingdao, is very suitable for the decoration of the exterior facade of the building and makes the architectural appearance more powerful and heavy.</item>
+        <item>No, the pillars outside the room are the design of the European classicist hangout.</item>
+        <item>Architectural books.</item>
+        <item>Chinese traditional culture is extensive and profound. I am still in the process of learning and understanding.</item>
+        <item>During the construction of the Governor\'s Building, there were a lot of Chinese labor involved, and the Governor\'s Building condensed the wisdom and sweat of the Chinese craftsmen a hundred years ago.</item>
+        <item>In 1907, the building had just been completed, and although the scaffolding had not yet been removed, Governor Truppor was thrilled to see it and a masterpiece. I am very proud, also very proud.</item>
+        <item>Open to it! Thank you very much for having more friends to appreciate and recognize its historical value. And I\'m right here! Or through the power of artificial intelligence, I am still alive!</item>
+        <item>Very good Thank you very much for the maintenance, repair and maintenance of the Governor\'s Museum over the years.</item>
+        <item>Right I have attached great importance to the necessity of the application of industrial design in architecture since the beginning of the architectural design with such complex internal structure. Especially the long-term practicability of ventilation system.</item>
+        <item>The Governor\'s Building is my first architectural work. A work that means a lot to me and is very representative.</item>
+        <item>The interior repair of the building is based on the materials of the building itself. The restoration process as part of the building museum safety aspect is also part of the staff\'s consideration.</item>
+        <item>Governor back to the signal Hill, South overlooking Qingdao Bay, for the mountains and sea shape of the land. That is what you call "feng shui good" ah!</item>
+        <item>There are many new ideas in the new world. Now I have a lot of time, concentrate on learning, really swim in the ocean of architectural culture.</item>
+        <item>Not only did the floor of the housekeeper\'s room in the Governor\'s Building fall down, but the roof was also lower than the rest of the room.The reason was that the staircase leading to the attic was not open enough to extend comfortably, so it was necessary to lower the height of the east roof of the room in order to ensure that the slope was not too steep. The roof on the first floor is the same height.</item>
+        <item>The ground floor of the Governor\'s Building, though, looks like a half-basement. It\'s all above the ground.</item>
+        <item>In the design and construction of the Governor Building, the combination of landscape and the control of the environment have been taken into account. The surrounding landscape contains three interrelated levels. The first level is the triangular flower bed outside the main entrance, which is laid with lawn combined with flowers and trees. The second is the present courtyard, with dozens of exotic flowers and plants, and the third is the Governor\'s Garden, which was planned at the time, but the large part of it is already outside the current courtyard wall.</item>
+        <item>The chandeliers, ceilings and fireplaces in each room are designed differently to highlight the richness of the interior. The sliding door track is designed at the top and is very common in Europe.</item>
+        <item>I\'m the Governor Building architect, Rachel Lowitz.</item>
+        <item>I hope the building will always be preserved.</item>
+        <item>No, but I\'m glad to have more friends see the building and get inside it.</item>
+        <item>Eastern elements of architecture: the tower in the southwest and southeast corner, the design of the faucet; the western elements of architecture: classicism gallery, youth style decoration and so on.</item>
+        <item>In designing the layout of the Governor\'s Building, I fully considered the need for function. The first floor was the kitchen, the wine cellar, and the boiler room; the second floor was the Governor\'s office, where the guests were located; the third floor was the Governor\'s and his family\'s living quarters; the fourth floor was the servant\'s room and the guest room.</item>
+        <item>This is a good question, if there is still a chance, I will retain the original concept of East and West architecture, adding to the world of environmental design style integration.You know, a great building in structural design,Material application and practicability are very important!</item>
+    </array>
+</resources>

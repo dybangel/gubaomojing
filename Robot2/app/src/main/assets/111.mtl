@@ -1,0 +1,9 @@
+newmtl wire_028089177
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.11 0.35 0.69
+Tf 1.00 1.00 1.00
+map_Kd color.jpg
+Ni 1.50
+Ks 0.35 0.35 0.35
+Ns 32.00

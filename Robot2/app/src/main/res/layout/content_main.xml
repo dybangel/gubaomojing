@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!--android:layout_marginTop="690dp"-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main3btn"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_marginTop="690dp"
+    android:background="#00000000"
+
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_main">
+    <!--android:gravity="center|center_horizontal|center_vertical"-->
+    <!--    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"-->
+
+
+    <ListView
+        android:id="@+id/answer"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:divider="@null"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_weight="1"
+        android:gravity="right"
+         android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_auto"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@drawable/takephoto_new"
+
+            android:layout_centerInParent="true"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#00000000"
+        android:gravity="right"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/img_down"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/hint"
+            android:visibility="gone"
+
+            />
+
+        <Button
+            android:id="@+id/record"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/record_new"
+            android:onClick="startListen"
+            android:textColor="#FFFFFFFF"
+            android:textColorHighlight="@color/colorPrimaryDark" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#00000000"
+        android:gravity="right"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/chlanuage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shape"
+            android:text="ENGLISH"
+            android:textColor="#FFFFFF"
+            android:onClick="change_language"
+
+            android:textColorHighlight="@color/colorPrimaryDark" />
+    </LinearLayout>
+
+</LinearLayout>
