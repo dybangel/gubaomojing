@@ -9,6 +9,7 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Build;
@@ -107,26 +108,36 @@ public class MainActivity extends AppCompatActivity {
     public PcmToWavUtil pcmToWavUtil ;
     public static int welcomesoundid,warningid,pleasewait;
     public static String tulingid;
-     public  String sit = Environment.getExternalStorageDirectory() + File.separator + "sit.mp4";
-   // public String sit = "android.resource://" + getPackageName() + "/" + R.raw.sit;
+    public ImageView iv2;
+    public static String geshi="mp4";
+    //     public  String sit = Environment.getExternalStorageDirectory() + File.separator + "sit.mp4";
+    public  String sit = Environment.getExternalStorageDirectory() + File.separator + "sit."+geshi;
 
-    public  String standup_walk = Environment.getExternalStorageDirectory() + File.separator + "standup_walk.mp4";
+    // public String sit = "android.resource://" + getPackageName() + "/" + R.raw.sit;
+
+    //    public  String standup_walk = Environment.getExternalStorageDirectory() + File.separator + "standup_walk.mp4";
+    public  String standup_walk = Environment.getExternalStorageDirectory() + File.separator + "standup_walk."+geshi;
     //public String standup_walk = "android.resource://" + getPackageName() + "/" + R.raw.standup_walk;
 
-    public  String standby = Environment.getExternalStorageDirectory() + File.separator + "standby.mp4";
-   // public String standby = "android.resource://" + getPackageName() + "/" + R.raw.standby;
+    //    public  String standby = Environment.getExternalStorageDirectory() + File.separator + "standby.mp4";
+    public  String standby = Environment.getExternalStorageDirectory() + File.separator + "standby."+geshi;
 
-    public  String talk = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
-   // public String talk = "android.resource://" + getPackageName() + "/" + R.raw.talk;
+    // public String standby = "android.resource://" + getPackageName() + "/" + R.raw.standby;
 
-    public  String back_walk = Environment.getExternalStorageDirectory() + File.separator + "back_walk.mp4";
-  //  public String back_walk = "android.resource://" + getPackageName() + "/" + R.raw.back_walk;
+    //    public  String talk = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
+    public  String talk = Environment.getExternalStorageDirectory() + File.separator + "talk."+geshi;
+
+    // public String talk = "android.resource://" + getPackageName() + "/" + R.raw.talk;
+
+    //    public  String back_walk = Environment.getExternalStorageDirectory() + File.separator + "back_walk.mp4";
+    public  String back_walk = Environment.getExternalStorageDirectory() + File.separator + "back_walk."+geshi;
+    //  public String back_walk = "android.resource://" + getPackageName() + "/" + R.raw.back_walk;
 
     public int interval=30000;
-    Handler handler_interval;
+    Handler handler_interval,handler_yincang;
     public String sjs_state="sit";
-   //视频分类  sit、standup_walk、standby、talk、back_walk
-  //  int position;
+    //视频分类  sit、standup_walk、standby、talk、back_walk
+    //  int position;
     private static long SPLASH_MILLIS = 450;
     //子线程是否运行的状态1 表示需要运行
     private int thread_status=1;
@@ -134,8 +145,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView img_down;
     AnimationSet animationSet;
-   // private ImageView Hintbtn;
-  //  private MainActivity mainActivity;
+    // private ImageView Hintbtn;
+    //  private MainActivity mainActivity;
 
 
 
@@ -241,15 +252,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void hideBottomUIMenu() {
-     //隐藏虚拟按键，并且全屏
-         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-               View v = this.getWindow().getDecorView();
-               v.setSystemUiVisibility(View.GONE);  } else if (Build.VERSION.SDK_INT >= 19) {
-             Window _window = getWindow();
-             WindowManager.LayoutParams params = _window.getAttributes();
-             params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE;
-             _window.setAttributes(params);
-         }}
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);  } else if (Build.VERSION.SDK_INT >= 19) {
+            Window _window = getWindow();
+            WindowManager.LayoutParams params = _window.getAttributes();
+            params.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION|View.SYSTEM_UI_FLAG_IMMERSIVE;
+            _window.setAttributes(params);
+        }}
     //将getmainActivity public化供别的类调用，虽然这样做不太好！！
     public static MainActivity getMainActivity(){
         return mainActivity;
@@ -259,7 +270,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         res = this.getResources();
-        setContentView(R.layout.activity_main);
+        // 根据分辨率调整布局
+        DisplayMetrics dMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
+        int screenWidth =dMetrics.widthPixels;
+        int screenHeight =dMetrics.heightPixels;
+        if(screenWidth<1000){
+            setContentView(R.layout.activity_main_small);
+        }else{
+         //   setContentView(R.layout.activity_main_small);
+            setContentView(R.layout.activity_main);
+        }
+        //   setContentView(R.layout.activity_main);
         hideBottomUIMenu();
         this.getString(R.string.tulingid);
         if(isfirstrun==true){
@@ -274,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
         intervalid=soundPool.load(this,R.raw.interval,1);
         warningid=soundPool.load(this,R.raw.warning,1);
         pleasewait=soundPool.load(this,R.raw.pleasewait,1);
+        iv2=(ImageView)this.findViewById(R.id.imageView2);
         //   soundId=welcomesoundid;
         Intent intent = new Intent(MainActivity.this, AutoStartService.class);
         startService(intent);
@@ -284,11 +307,7 @@ public class MainActivity extends AppCompatActivity {
         bv_english=(BarrageViewEnglish)findViewById(R.id.bv_text_english);
         btnch=(Button) findViewById(R.id.chlanuage);
         img_down=(ImageView)findViewById(R.id.img_down);
-        // 根据分辨率调整布局
-//        DisplayMetrics dMetrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
-//        int screenWidth =dMetrics.widthPixels;
-//        int screenHeight =dMetrics.heightPixels;
+
         //普通手机
         //if(screenWidth<1000){
 //            LinearLayout line = (LinearLayout) findViewById(R.id.main3btn);
@@ -296,21 +315,21 @@ public class MainActivity extends AppCompatActivity {
 //            params.setMargins(0, 190, 0, 0);
 //            line.setLayoutParams(params);
 
-            //设置LinearLayout的高宽
-         //   LinearLayout layout = (LinearLayout)findViewById(R.id.main3btn);
-       //     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 150);
-      //      //设置linearLayout 的起点
-           // params.leftMargin = 100
+        //设置LinearLayout的高宽
+        //   LinearLayout layout = (LinearLayout)findViewById(R.id.main3btn);
+        //     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100, 150);
+        //      //设置linearLayout 的起点
+        // params.leftMargin = 100
 
 //                params.topMargin=190;
 //                layout.setLayoutParams( params );
 
         //}
         //   System.out.println("width===" + screenWidth);
-      //  System.out.println("width===" + screenHeight);
+        //  System.out.println("width===" + screenHeight);
 //提示按钮特效
-      //  img_down = (ImageView)findViewById(R.id.img_down);
-         animationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.down_anim);
+        //  img_down = (ImageView)findViewById(R.id.img_down);
+        animationSet = (AnimationSet) AnimationUtils.loadAnimation(this, R.anim.down_anim);
 
 
 
@@ -324,23 +343,23 @@ public class MainActivity extends AppCompatActivity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     v.setTop(15);
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                v.setTop(0);
+                    v.setTop(0);
                 }
                 return  false;
             }
         });
-Button btn_takephoto=(Button)findViewById(R.id.button_auto);
-btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            v.setTop(15);
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            v.setTop(0);
-        }
-        return false;
-    }
-});
+        Button btn_takephoto=(Button)findViewById(R.id.button_auto);
+        btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    v.setTop(15);
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    v.setTop(0);
+                }
+                return false;
+            }
+        });
         //给拍照按钮绑定事件
         btn_takephoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -372,7 +391,22 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
             actionBar.hide();
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//
+
+
+
+        handler_yincang = new Handler(){
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 9:
+                        iv2.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        break;
+                }
+            }
+        };
+
+        //
         handler_interval = new Handler(){
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -401,7 +435,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
         nextmediaPlayer = new MediaPlayer();
         surfaceView = (SurfaceView) this.findViewById(R.id.surfaceView);
         //设置SurfaceView自己不管理的缓冲区
-        surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        //    surfaceView.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 //++++++++++++++++++++++++++++++++++++++++++++
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -438,16 +472,16 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
 //        }, SPLASH_MILLIS);
 
 //++++++++++++++++++++++++++++++++++++++++++++++
-       myAdapter = new MyAdapter();
+        myAdapter = new MyAdapter();
         answer.setAdapter(myAdapter);
         // 将“12345678”替换成您申请的 APPID，申请地址：http://www.xfyun.cn
         // 请勿在“=”与 appid 之间添加任务空字符或者转义符
         SpeechUtility.createUtility(this, SpeechConstant.APPID + "="+this.getString(R.string.kedaid));
-     //   play(sit);
+        //   play(sit);
         interval=30000;
 //        compose("请按下屏幕右侧的拍照按钮，然后您有10秒钟的时间调整最佳的拍照动作，当拍照结束后可以扫描屏幕上的二维码下载照片");
         compose("你好，欢迎光临总督府");
-     //   compose("请稍等，我马上就来");
+        //   compose("请稍等，我马上就来");
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -461,7 +495,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
 
 
 
-         //
+        //
     }
 
 
@@ -471,47 +505,33 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
 
     public    void copayAssetsToSdCard() {
         //FileUtils.makeDirs(path);
-       // String path=Directory.DOWN_LODE_APF_PATH.toString();
-      //  soundPool.play(warningid, 1,1,1,0,1);//播放，得到StreamId
+        // String path=Directory.DOWN_LODE_APF_PATH.toString();
+        //  soundPool.play(warningid, 1,1,1,0,1);//播放，得到StreamId
 
         String path=Environment.getExternalStorageDirectory() + File.separator;
-        FileUtils.copyAssetToSDCard(this.getAssets(), "talk.mp4", path + "talk.mp4");
-        FileUtils.copyAssetToSDCard(this.getAssets(), "standby.mp4", path + "standby.mp4");
-        FileUtils.copyAssetToSDCard(this.getAssets(), "back_walk.mp4", path + "back_walk.mp4");
-        FileUtils.copyAssetToSDCard(this.getAssets(), "standup_walk.mp4", path + "standup_walk.mp4");
-      FileUtils.copyAssetToSDCard(this.getAssets(), "sit.mp4", path + "sit.mp4");
+        // FileUtils.copyAssetToSDCard(this.getAssets(), "talk.mp4", path + "talk.mp4");
+        // FileUtils.copyAssetToSDCard(this.getAssets(), "standby.mp4", path + "standby.mp4");
+        // FileUtils.copyAssetToSDCard(this.getAssets(), "back_walk.mp4", path + "back_walk.mp4");
+        // FileUtils.copyAssetToSDCard(this.getAssets(), "standup_walk.mp4", path + "standup_walk.mp4");
+        //FileUtils.copyAssetToSDCard(this.getAssets(), "sit.mp4", path + "sit.mp4");
 
+        FileUtils.copyAssetToSDCard(this.getAssets(), "talk."+geshi, path + "talk."+geshi);
+        FileUtils.copyAssetToSDCard(this.getAssets(), "standby."+geshi, path + "standby."+geshi);
+        FileUtils.copyAssetToSDCard(this.getAssets(), "back_walk."+geshi, path + "back_walk."+geshi);
+        FileUtils.copyAssetToSDCard(this.getAssets(), "standup_walk."+geshi, path + "standup_walk."+geshi);
+        FileUtils.copyAssetToSDCard(this.getAssets(), "sit."+geshi, path + "sit."+geshi);
     }
-    //多线程
 
-    public class mythread1 implements Runnable {
-
+    public class mythread_yincang implements Runnable {
         @Override
         public void run() {
             // TODO Auto-generated method stub
-            //int i=1;
             try {
-                while(thread_status==1){
-                 //   i++;
                     Thread.sleep(1000);
-                    if(interval==0){
-
-                        Message msg1 = new Message();
-                        msg1.what=0;
-                        handler_interval.sendMessage(msg1);
-                        interval=30000;
-                        //play(back_walk);
-                        //showTip("backtowalk");
-                    }else {
-                        interval = interval - 1000;
-                    }
-                }
-
-            //
-            //
-
-
-
+                    Message msg1 = new Message();
+                    msg1.what=9;
+                handler_yincang.sendMessage(msg1);
+                  //  iv2.setVisibility(View.INVISIBLE);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -519,13 +539,61 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
 
         }
     }
+    //多线程
+
+    public class mythread1 implements Runnable {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            try {
+                while(thread_status==1){
+                    //   i++;
+                    Thread.sleep(1000);
+                    if(interval==0){
+
+                        Message msg1 = new Message();
+                        msg1.what=0;
+                        handler_interval.sendMessage(msg1);
+                        interval=30000;
+                    }else {
+                        interval = interval - 1000;
+                    }
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
     //视频播放函数
     public void play(String path){
         if(Gplaystate==true){
 
             try {
 
+                if(sjs_state=="standby"){
+                    iv2.setVisibility(View.VISIBLE);
+                    new Thread(new mythread_yincang()).start();
+                    //return;
+                }else if (sjs_state=="talk"){
+                    iv2.setVisibility(View.VISIBLE);
+                   // mediaPlayer.stop();
+//                    mediaPlayer.reset();
+//                    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+//                    mediaPlayer.setDataSource(talk);
+//                    mediaPlayer.setDisplay(surfaceView.getHolder());
+//                    mediaPlayer.prepare();
+//                    mediaPlayer.seekTo(0);
+//                    mediaPlayer.start();
+                    new Thread(new mythread_yincang()).start();
+                 //   return;
+                }
+                
                 mediaPlayer.stop();
+                // mediaPlayer.release();
                 mediaPlayer.reset();
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 //设置需要播放的视频
@@ -535,6 +603,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
                 mediaPlayer.setDisplay(surfaceView.getHolder());
 
                 mediaPlayer.prepare();
+                // mediaPlayer.prepareAsync();
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
@@ -548,7 +617,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
                                 showTip("standby");
                                 //打开弹幕
                                 bv.setVisibility(View.VISIBLE);
-                             //   打开切换语言按钮
+                                //   打开切换语言按钮
                                 btnch.setVisibility(View.VISIBLE);
                                 btnch.setText("ENGLISH");
                                 //设置语言中文
@@ -560,6 +629,17 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
                                 e.printStackTrace();
                             }
                         }
+//                        if(sjs_state=="talk"){
+//                            mediaPlayer.stop();
+//                            mediaPlayer.reset();
+//                            try {
+//                                mediaPlayer.setDataSource(standby);
+//                                mediaPlayer.prepare();
+//                                sjs_state="standby";
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
                         //如果设计师状态师转身回去，那么执行坐下循环
                         if(sjs_state=="back_walk"){
                             try {
@@ -576,13 +656,25 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
                                 e.printStackTrace();
                             }
                         }
+                        //  mediaPlayer.stop();
                         mediaPlayer.seekTo(0);
+                        //mediaPlayer.wait(1.1);
                         mediaPlayer.start();
                     }
                 });
 
                 //播放
+                mediaPlayer.seekTo(0);
                 mediaPlayer.start();
+
+
+//                if(sjs_state=="standby"){
+//                 //   iv2.setVisibility(View.VISIBLE);
+//                  //  return;
+//                }else{
+//                      iv2.setVisibility(View.INVISIBLE);
+//                    //  return;
+//                }
 
                 //  Toast.makeText(this, "开始播放11", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -590,7 +682,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
             }
         }
     }
-//屏蔽下拉菜单
+    //屏蔽下拉菜单
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         // TODO Auto-generated method stub
@@ -641,19 +733,19 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
         mediaPlayer.stop();
         mediaPlayer.reset();
         Intent intent = new Intent(MainActivity.this, ImageTargets.class);
-         startActivity(intent);
+        startActivity(intent);
     }
     //录音按钮事件
     public void startListen(View v) {
-    //重置interval
+        //重置interval
         interval=30000;
 
         //如果当前视频path1 不是站立循环视频或者说话循环视频，说明设计师正在坐着，那就播放起身走过来的视频然后退出
         if(sjs_state=="sit"){
             sjs_state="standup_walk";
-          //  Gplaystate=false;
+            //  Gplaystate=false;
 //            compose("你好，欢迎光临迎宾馆");
-           // Gplaystate=true;
+            // Gplaystate=true;
 
             soundPool.play(welcomesoundid, 1,1,1,0,1);//播放，得到StreamId
 
@@ -661,7 +753,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
             showTip("standup_walk");
             return;
         } else if(sjs_state=="standup_walk"||sjs_state=="back_walk"){
-          //  compose("我这就来");
+            //  compose("我这就来");
             soundPool.play(pleasewait, 1,1,1,0,1);//播放，得到StreamId
 
             return;
@@ -676,7 +768,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
         mDialog.setTitle("123");
         //若要将UI控件用于语义理解， 必须添加以下参数设置， 设置之后onResult回调返回将是语义理解
         //结果
-         //mDialog.setParameter("asr_sch", "1");
+        //mDialog.setParameter("asr_sch", "1");
         // mDialog.setParameter("nlp_version", "2.0");
         sbuff = new StringBuffer();
         //3.设置回调接口
@@ -698,7 +790,7 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
                     answers="这个问题我们机器要开个会，等商量出来再告诉你";
                     //调用图灵
                     new GetMessage().start();
-                //    play(path1);
+                    //    play(path1);
                 }
             }
             @Override
@@ -787,14 +879,14 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
 
         @Override
         public void onSpeakBegin() {
-         //   path1 = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
+            //   path1 = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
 
             sjs_state="talk";
             //开始说话前 停止子线程，这样做的目的是防止过长的语音过程中，设计师还没说完话就往回走了
             thread_status=0;
             play(talk);
             showTip(" 开始播放 ");
-          //  findViewById(R.id.button_auto).setEnabled(false);
+            //  findViewById(R.id.button_auto).setEnabled(false);
 
 
         }
@@ -818,14 +910,14 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
         @Override
         public void onSpeakProgress(int percent, int beginPos, int endPos) {
             // 播放进度
-           // showTip("progress......");
+            // showTip("progress......");
         }
 
         @Override
         public void onCompleted(SpeechError error) {
             if (error == null) {
                 //play(path1);
-                 //path1 = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
+                //path1 = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
                 sjs_state="standby";
                 //设计师说完话了，再次启动子线程倒计时
                 thread_status=1;
@@ -840,14 +932,14 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
                 final String outpath = path.replace(".pcm", ".wav");
                 pcmToWavUtil = new PcmToWavUtil();
                 pcmToWavUtil.pcmToWav(path, outpath);
-              //  findViewById(R.id.button_auto).setEnabled(true);
+                //  findViewById(R.id.button_auto).setEnabled(true);
             } else if (error != null) {
                 showTip(error.getPlainDescription(true));
             }
         }
     }
 
-        static class ViewHolder {
+    static class ViewHolder {
         public TextView tvAsk;
         public TextView tvAnswer;
         public ImageView ivPic;
@@ -870,8 +962,8 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
             bv_english.setVisibility(View.GONE);
         }
 
-      //  BarrageView.initData();
-      //  bv.refreshDrawableState();
+        //  BarrageView.initData();
+        //  bv.refreshDrawableState();
 //        bv.setVisibility(View.VISIBLE);
 
 //        new Thread(new Runnable() {
@@ -887,10 +979,10 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
 //            }
 //        }).start();
     }
-//showtipp
+    //showtipp
     private void showTip(String data){
         if(Gdebug==true){
-        Toast.makeText(this,data,Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,data,Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -952,17 +1044,17 @@ btn_takephoto.setOnTouchListener(new View.OnTouchListener() {
             public void onEvent(int arg0, int arg1, int arg2, Bundle arg3) {
             }
         };
-       // mSynListener.onCompleted(null);
+        // mSynListener.onCompleted(null);
     }
 
     public class GetMessage extends Thread{
         public void run(){
-			/*super.start();*/
+            /*super.start();*/
             Message msg=new Message();
             try{
                 msg.what=1;
                 message=new GetHttpMessage().testGetRequest(askContent);
-              //  Log.e("黄柳淞",message);
+                //  Log.e("黄柳淞",message);
             }
             catch(Exception e){
                 e.printStackTrace();

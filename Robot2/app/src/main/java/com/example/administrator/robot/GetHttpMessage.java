@@ -30,7 +30,7 @@ public class GetHttpMessage {
 		InputStream ins = null;
 		// Create a method instance.
 		GetMethod method = new GetMethod(
-				"http://www.tuling123.com/openapi/api?key="+ MainActivity.tulingid+"&info="
+				"http://www.tuling123.com/openapi/api?key=59b4458112a84815bec1d5d4c62a7316&info="
 						+ info + "");
 
 		// Provide custom retry handler is necessary

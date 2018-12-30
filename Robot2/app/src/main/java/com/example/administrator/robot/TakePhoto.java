@@ -33,7 +33,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.io.ByteArrayOutputStream;
@@ -73,8 +75,12 @@ public class TakePhoto extends AppCompatActivity {
     public Button b2,b3,b4,b5;
     public ImageView ivpic1,ivpic2,ivpic3,sjsiv;
     private File f;
-    private ImageView iv1;
-
+    private ImageView iv1,zhifubao;
+    private LinearLayout LLpassword;
+    private Button bp0,bp1,bp2,bp3,bp4,bp5,bp6,bp7,bp8,bp9,bp10,bpenter;
+    private EditText et1,et2,et3,et4;
+    private int passwordcount=0;
+    private String passwordstring="";
     CircleProgressBar mCircleProgress;
     Handler handler;
     protected  void onCreate(Bundle savedInstanceState){
@@ -88,7 +94,23 @@ public class TakePhoto extends AppCompatActivity {
        ivpic2=(ImageView)findViewById(R.id.pic2);
        ivpic3=(ImageView)findViewById(R.id.pic3);
         sjsiv=(ImageView)findViewById(R.id.iv2);
-       MainActivity.soundPool.play(MainActivity.tishiid, 1,1,1,0,1);//播放，得到StreamId
+       LLpassword=(LinearLayout) findViewById(R.id.password);
+        bp0=(Button)findViewById(R.id.pbutton0);
+       bp1=(Button)findViewById(R.id.pbutton1);
+        bp2=(Button)findViewById(R.id.pbutton2);
+        bp3=(Button)findViewById(R.id.pbutton3);
+        bp4=(Button)findViewById(R.id.pbutton4);
+        bp5=(Button)findViewById(R.id.pbutton5);
+        bp6=(Button)findViewById(R.id.pbutton6);
+        bp7=(Button)findViewById(R.id.pbutton7);
+        bp8=(Button)findViewById(R.id.pbutton8);
+        bp9=(Button)findViewById(R.id.pbutton9);
+        bpenter=(Button)findViewById(R.id.pbuttonenter);
+        et1=(EditText)findViewById(R.id.editText1);
+        et2=(EditText)findViewById(R.id.editText2);
+        et3=(EditText)findViewById(R.id.editText3);
+        et4=(EditText)findViewById(R.id.editText4);
+        MainActivity.soundPool.play(MainActivity.tishiid, 1,1,1,0,1);//播放，得到StreamId
 
        // b2.setOnClickListener(new View.OnClickListener() {
          //   @Override
@@ -104,6 +126,92 @@ public class TakePhoto extends AppCompatActivity {
 
      //       }
        // });
+        //密码键盘按钮事件
+        bp0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("0");
+            }
+        });
+        bp1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("1");
+            }
+        });
+        bp2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("2");
+            }
+        });
+        bp3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("3");
+            }
+        });
+        bp4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("4");
+            }
+        });
+        bp5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("5");
+            }
+        });
+        bp6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("6");
+            }
+        });
+        bp7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("7");
+            }
+        });
+        bp8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("8");
+            }
+        });
+        bp9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterpassword("9");
+            }
+        });
+        bpenter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(passwordstring.equals("8359")||passwordstring.equals("6743")||passwordstring.equals("2190")||passwordstring.equals("7721")||passwordstring.equals("6400")
+                        ||passwordstring.equals("9912")||passwordstring.equals("4053")||passwordstring.equals("1873"))
+                {
+                    //显示图片下载二维码
+                    ImageView iv1 =(ImageView)findViewById(R.id.iv1);
+                    zhifubao=(ImageView)findViewById(R.id.ivzhifubao);
+                    iv1.setVisibility(View.VISIBLE);
+                    zhifubao.setVisibility(View.VISIBLE);
+                   // findViewById(R.id.button4).setVisibility(View.GONE);
+                    b4.setVisibility(View.GONE);
+                    LLpassword.setVisibility(View.GONE);
+                }else{
+                    et1.setText("*");
+                    et2.setText("*");
+                    et3.setText("*");
+                    et4.setText("*");
+                    passwordcount=0;
+                    passwordstring="";
+                }
+            }
+        });
+
         ivpic1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,9 +331,9 @@ public class TakePhoto extends AppCompatActivity {
         b4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView iv1 =(ImageView)findViewById(R.id.iv1);
-                iv1.setVisibility(View.VISIBLE);
-                findViewById(R.id.button4).setVisibility(View.GONE);
+                //显示密码框
+                LLpassword.setVisibility(View.VISIBLE);
+
             }
         });
         //拍照按钮
@@ -297,6 +405,27 @@ public class TakePhoto extends AppCompatActivity {
 //        }
 //        return false;
 //    }
+    public void enterpassword(String s){
+    if(passwordcount==0){
+        passwordcount=1;
+        et1.setText(s);
+        passwordstring=passwordstring+s;
+    }else if(passwordcount==1){
+        passwordcount=2;
+        et2.setText(s);
+        passwordstring=passwordstring+s;
+    }else if(passwordcount==2){
+        passwordcount=3;
+        et3.setText(s);
+        passwordstring=passwordstring+s;
+    }else if(passwordcount==3){
+        passwordcount=4;
+        et4.setText(s);
+        passwordstring=passwordstring+s;
+    }else if(passwordcount==4){
+
+    }
+    }
 //多线程播放声音
 public class mythread1 implements Runnable {
 
@@ -429,7 +558,9 @@ public class mythread1 implements Runnable {
                 }).start();
 
            //     b4.setEnabled(true);
+
                 b4.setVisibility(View.VISIBLE);
+
           //      b5.setEnabled(true);
                 b5.setVisibility(View.VISIBLE);
                 Log.d("a7888", "存储完成");

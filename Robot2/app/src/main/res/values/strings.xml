@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">古堡魔镜</string>
     <string name="action_settings">其他功能</string>
-    <string name="kedaid"></string>
-    <string name="tulingid"></string>
+    <string name="kedaid">5aaa22b8</string>
+    <string name="tulingid">59b4458112a84815bec1d5d4c62a7316</string>
     <string name="menu_back">Vuforia Samples</string>
     <string name="menu_extended_tracking">Extended Tracking</string>
     <string name="menu_character_mode">Character Mode</string>
