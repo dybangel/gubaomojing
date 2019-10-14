@@ -13,8 +13,10 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -27,6 +29,8 @@ import android.renderscript.Element;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -37,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +54,7 @@ import com.example.administrator.robot.qiniuultra.Upload;
 import com.example.administrator.robot.service.FileUploadObserver;
 import com.example.administrator.robot.service.HttpRequest;
 import com.example.administrator.robot.service.ProgressRequestBody;
+import com.example.administrator.robot.storage.model.FileInfo;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -110,6 +116,21 @@ public class TakePhoto extends AppCompatActivity {
         et2=(EditText)findViewById(R.id.editText2);
         et3=(EditText)findViewById(R.id.editText3);
         et4=(EditText)findViewById(R.id.editText4);
+        BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable((R.drawable.sjs1));
+        //以最省资源的方式读取资源文件，加载到iv2上
+        Bitmap bmsjs1=readBitMap(this,R.drawable.sjs1);
+        //初始化设计师第一个姿势的大贴图
+        sjsiv.setImageBitmap(bmsjs1);
+        //给小图标增加设计师图片
+        Bitmap bmsjs1m=readBitMap(this,R.mipmap.sjs1m);
+        Bitmap bmsjs2m=readBitMap(this,R.mipmap.sjs1m);
+        Bitmap bmsjs3m=readBitMap(this,R.mipmap.sjs1m);
+        ivpic1.setImageBitmap(bmsjs1m);
+        ivpic2.setImageBitmap(bmsjs2m);
+        ivpic3.setImageBitmap(bmsjs3m);
+
+      //  sjsiv.setImageBitmap(  bd.getBitmap());
+
         MainActivity.soundPool.play(MainActivity.tishiid, 1,1,1,0,1);//播放，得到StreamId
 
        // b2.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +238,7 @@ public class TakePhoto extends AppCompatActivity {
             public void onClick(View v) {
 
                 sjsiv.setImageDrawable(getResources().getDrawable((R.drawable.sjs1)));
+
             }
         });
         ivpic2.setOnClickListener(new View.OnClickListener() {
@@ -405,6 +427,23 @@ public class TakePhoto extends AppCompatActivity {
 //        }
 //        return false;
 //    }
+    /**
+     * 以最省内存的方式读取本地资源的图片
+     *
+     * @param context
+     * @param resId
+     * @return
+     */
+    public static Bitmap readBitMap(Context context, int resId) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        // 获取资源图片
+        InputStream is = context.getResources().openRawResource(resId);
+        return BitmapFactory.decodeStream(is, null, opt);
+    }
+
     public void enterpassword(String s){
     if(passwordcount==0){
         passwordcount=1;
@@ -539,29 +578,47 @@ public class mythread1 implements Runnable {
         dView.setDrawingCacheEnabled(true);
         dView.buildDrawingCache();
         //Bitmap bitmap = Bitmap.createBitmap(dView.getDrawingCache());
+        Toast.makeText(this,"正在为你截取照片。。。。。",Toast.LENGTH_SHORT).show();;
         Bitmap bitmap=capture(this);
         if (bitmap != null) {
             try {
-                saveBitmap(bitmap,"pic2.jpeg");
-
+                final String picname="pic"+ (int)(Math.random() * 100)+".jpeg";
+                Toast.makeText(this,"正在为您保存照片。。。。。",Toast.LENGTH_SHORT).show();;
+                saveBitmap(bitmap,picname);
+                Toast.makeText(this,"正在为您生成照片二维码。。。。。",Toast.LENGTH_SHORT).show();;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            new Upload().upload(getBaseContext(),"/sdcard/DCIM/Camera/pic2.jpeg");
-                             f =new File("/sdcard/DCIM/Camera/pic2.jpeg");
-                             upload(f);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                      //  try {
+                           // new Upload().upload(getBaseContext(),"/sdcard/DCIM/Camera/"+picname);
+
+                             f =new File("/sdcard/DCIM/Camera/"+picname);//
+                          FtpUtil ftpUtil = new FtpUtil("47.240.57.240", 21, "anonymous", "anonymous");
+                        if(ftpUtil.open()){
+                            //ftpUtil.donwLoad("/中.txt", "E:/ftp2/中文.txt");
+                            ftpUtil.upLoading("/pub/"+picname, "/sdcard/DCIM/Camera/"+picname);
+
                         }
+                        //sm.ms的上传方式
+                       //      upload(f);
+
+                            // f.delete();
+                    //    } catch (IOException e) {
+                        //    e.printStackTrace();
+                     //   }
                     }
                 }).start();
 
            //     b4.setEnabled(true);
 
-                b4.setVisibility(View.VISIBLE);
 
           //      b5.setEnabled(true);
+                Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap("http://47.240.57.240/pub/pub/"+picname, 480, 480);
+                iv1=(ImageView) findViewById(R.id.iv1);
+                iv1.setImageBitmap(mBitmap);
+                //显示下载按钮
+                b4.setVisibility(View.VISIBLE);
+                //显示返回按钮
                 b5.setVisibility(View.VISIBLE);
                 Log.d("a7888", "存储完成");
             } catch (Exception e){
@@ -570,25 +627,103 @@ public class mythread1 implements Runnable {
 
     }
 
-    private void saveBitmap(Bitmap bitmap,String bitName) throws IOException
-    {
-        //  String path1 = Environment.getExternalStorageDirectory() + File.separator;
-        File file = new File("/sdcard/DCIM/Camera/"+bitName);
-        if(file.exists()){
+    private void deletedirfile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                File f = files[i];
+                deletedirfile(f);
+            }
+            file.delete();//如要保留文件夹，只删除文件，请注释这行
+        } else if (file.exists()) {
             file.delete();
         }
+    }
+
+//图片压缩，传入原始图片对象，传入要生成的文件名称
+    private void saveBitmap(Bitmap bitmap,String bitName) throws IOException
+    {
+        File ffdir= new File("/sdcard/DCIM/Camera");
+        deletedirfile(ffdir);
+        //  String path1 = Environment.getExternalStorageDirectory() + File.separator;
+        File file = new File("/sdcard/DCIM/Camera/"+bitName);
+//        if(file.exists()){
+//            file.delete();
+//        }
         FileOutputStream out;
         try{
             out = new FileOutputStream(file);
-            if(bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out))
+            if(bitmap.compress(Bitmap.CompressFormat.JPEG, 65, out))
             {
                 out.flush();
                 out.close();
             }
             ImageView iv3 =(ImageView)findViewById(R.id.iv3);
+
+            /**
+             * >>>>>>>> 第一步：只获取图片的宽和高
+             */
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            // 设置只获取图片的信息，到时候记得还原恢复成false
+            options.inJustDecodeBounds = true;
+
+            /*
+             * 第一次加载图片，只为获得宽高
+             */
+            BitmapFactory.decodeFile("/sdcard/DCIM/Camera/"+bitName, options);
+
+            // 获取图片的宽高
+            int outWidth = options.outWidth;
+            int outHeight = options.outHeight;
+
+            /**
+             * >>>>>>>> 第二步：获取屏幕的宽和高
+             */
+
+            // 获取手机屏幕的宽高，手机屏幕属于Window
+            Display display = getWindow().getWindowManager().getDefaultDisplay();
+            int windowWidth = display.getWidth();
+            int windowHeight = display.getHeight();
+
+            /**
+             * >>>>>>>> 第三步：图片宽和高 对比 屏幕宽和高 = 计算宽高的缩放比例
+             */
+
+            /*
+             * 计算宽高的缩放比例
+             * valueX 代表横行 宽
+             * valueY 代表纵向 高
+             */
+            int valueX = outWidth / windowWidth;
+            int valueY = outHeight / windowHeight;
+
+            /**
+             * 判断宽和高的缩放比例哪个大，哪个大我就取哪个的值，只要把大的值处理即可
+             */
+            int value = valueX > valueY ? valueX : valueY;
+
+            // 防止加载的图片，比屏幕小，如果比屏幕小，就没有必要缩放了
+            if (0 >= value) {
+                value = 1;
+            }
+
+            // 在这里要恢复options.inJustDecodeBounds，才能设置下面的代码，设置false需要加载图片内容啦
+            options.inJustDecodeBounds = false;
+
+            // 指定缩放比率
+            options.inSampleSize = value;
+
+            /**
+             * 参数一：不推荐/sdcard/big.JPG 这种方式，因为每部手机的这个路径会变的，所以开发中要用Environment
+             * 参数二：Options 选项 可以设置图片的比例缩放，从而解决图片内存溢出的问题
+             */
+            Bitmap bitmap2 = BitmapFactory.decodeFile("/sdcard/DCIM/Camera/"+bitName, options);
+            iv3.setImageBitmap(bitmap2);
+
             //iv3.setImageBitmap(bitmap);
-            Uri uri = Uri.fromFile(new File("/sdcard/DCIM/Camera/"+bitName));
-            iv3.setImageURI(uri);
+         //////   Uri uri = Uri.fromFile(new File("/sdcard/DCIM/Camera/"+bitName));
+         ////   iv3.setImageURI(uri);
         }
         catch (FileNotFoundException e)
         {
@@ -618,17 +753,18 @@ public class mythread1 implements Runnable {
     }
 
     public void takePhoto(View view ){
-
+        Toast.makeText(this,"正在拍照...",Toast.LENGTH_SHORT).show();;
         cam.takePicture(null, null, new Camera.PictureCallback() {
             @Override
             public void onPictureTaken(byte[] bytes, Camera camera) {
                 //技术：图片压缩技术（如果图片不压缩，图片大小会过大，会报一个oom内存溢出的错误）
-                BitmapFactory.Options options =new BitmapFactory.Options();
-  //              options.inJustDecodeBounds=true;
+               // BitmapFactory.Options options =new BitmapFactory.Options();
+               // options.inJustDecodeBounds=true;
+                //          options.inJustDecodeBounds=false;
+               // options.inSampleSize=2;
+               // BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);
 
-//                BitmapFactory.decodeByteArray(bytes,0,bytes.length,options);
-    //            options.inSampleSize=2;
-      //          options.inJustDecodeBounds=false;
+
                 Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
 
                 //顺时针旋转90度 手机
@@ -637,25 +773,29 @@ public class mythread1 implements Runnable {
                 bitmap=adjustPhotoRotation(bitmap,-90);
 
                 //  第二张根据第一张生成
-                Bitmap modBm = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+
+            ////    Bitmap modBm = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
                 //2、以生成的第二张图片做画板
-                Canvas canvas = new Canvas(modBm);
-                Paint paint = new Paint();
-                paint.setColor(Color.BLACK);
-                paint.setAntiAlias(true);
+            ////    Canvas canvas = new Canvas(modBm);
+
+           ////     Paint paint = new Paint();
+           ////     paint.setColor(Color.BLACK);
+         ////       paint.setAntiAlias(true);
                //水平镜像
-                Matrix matrix =new Matrix();
-                matrix.setScale(-1, 1);
-                matrix.postTranslate(bitmap.getWidth(), 0);
-                canvas.drawBitmap(bitmap, matrix, paint);
+         ////       Matrix matrix =new Matrix();
+           ////     matrix.setScale(-1, 1);
+         ////       matrix.postTranslate(bitmap.getWidth(), 0);
+         ////       canvas.drawBitmap(bitmap, matrix, paint);
                 try {
                     //保存sv图片成jpeg，并且更新到iv3上
-                    saveBitmap(modBm,"pic1.jpeg");
-                    //截屏并保存图片到设备
+                ////    saveBitmap(modBm,"pic1.jpeg");
+                    saveBitmap(bitmap,"pic1.jpeg");
+
+                    //截屏并上传到图床
                     cutpic();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+               }
 
 
             }
@@ -706,35 +846,50 @@ public class mythread1 implements Runnable {
         FileUploadObserver<JsonBean> fileUploadObserver = new FileUploadObserver<JsonBean>() {
             @Override
             public void onSuccess(JsonBean bean) {
-           //     hideProgressDialog();
+
                 jsonBean = bean;
-                if (jsonBean.code.equals("success")) {
-                 //   showToast("上传成功");
-                //    text.setVisibility(View.VISIBLE);
-                    Log.d("url", jsonBean.data.url);
-                    Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(jsonBean.data.url, 480, 480);
-                    iv1=(ImageView) findViewById(R.id.iv1);
-                    iv1.setImageBitmap(mBitmap);
-                //    text.setText("图片链接：" + jsonBean.data.url);
-                //    delete.setVisibility(View.VISIBLE);
-                    //根据返回的外链加载该图
-              //      Glide.with(getBaseContext()).load(jsonBean.data.url).into(imageUpload);
-                } else {
-                    //上传失败
-                //    showToast("上传失败: " + jsonBean.msg);
+                Log.d("jsonBean.code","jsonBean.code:+++++++++"+jsonBean.code.toString());
+                try{
+                    if (jsonBean.code.equals("success")) {
+                        Log.d("a7889", "上传成功");
+
+                        Log.d("url", jsonBean.data.url);
+                        Bitmap mBitmap = QRCodeUtil.createQRCodeBitmap(jsonBean.data.url, 480, 480);
+                        iv1=(ImageView) findViewById(R.id.iv1);
+                        iv1.setImageBitmap(mBitmap);
+                        //显示下载按钮
+                        b4.setVisibility(View.VISIBLE);
+                    } else {
+                        //上传失败
+                        //maketext决定Toast显示内容
+                        Toast toastCenter = Toast.makeText(getApplicationContext(),"当前网络繁忙\n，您可以再拍一张试一试",Toast.LENGTH_LONG);
+
+                        //setGravity决定Toast显示位置
+                        toastCenter.setGravity(Gravity.CENTER,0,0);
+
+                        //调用show使得toast得以显示
+                        toastCenter.show();
+                        Log.d("a4444上传失败", "ffuucckk");
+                        //    showToast("上传失败: " + jsonBean.msg);
+                    }
+
+                }catch(Exception e){
+                    Log.d("upload error::::::","upload error 1:"+e.toString());
                 }
+
+
             }
 
             @Override
             public void onFail(Throwable e) {
                // hideProgressDialog();
                // showToast("上传失败");
-                Log.e("MainActivity", e.toString());
+                Log.e("upload faile：", e.toString());
             }
 
             @Override
             public void onProgress(int progress) {
-                Log.d("progress:", progress + "");
+                Log.d("progress upload:", progress + "");
                // progressDialog.setProgress(progress);
             }
 
@@ -757,4 +912,105 @@ public class mythread1 implements Runnable {
         ProgressRequestBody requestBody = new ProgressRequestBody(file, fileUploadObserver);
         return MultipartBody.Part.createFormData("smfile", file.getName(), requestBody);
     }
+
+
+    //新的图片压缩算法
+    public static Bitmap getSmallBitmap(String filePath) {
+
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, 480, 800);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+
+        Bitmap bm = BitmapFactory.decodeFile(filePath, options);
+        if(bm == null){
+            return  null;
+        }
+        int degree = readPictureDegree(filePath);
+        bm = rotateBitmap(bm,degree) ;
+        ByteArrayOutputStream baos = null ;
+        try{
+            baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 30, baos);
+
+        }finally{
+            try {
+                if(baos != null)
+                    baos.close() ;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bm ;
+
+    }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                             int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and
+            // width
+            final int heightRatio = Math.round((float) height
+                    / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will
+            // guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? widthRatio : heightRatio;
+        }
+
+        return inSampleSize;
+    }
+
+
+    private static int readPictureDegree(String path) {
+        int degree  = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+
+    private static Bitmap rotateBitmap(Bitmap bitmap, int rotate){
+        if(bitmap == null)
+            return null ;
+
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+
+        // Setting post rotate to 90
+        Matrix mtx = new Matrix();
+        mtx.postRotate(rotate);
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
+    }
+
+
+
 }

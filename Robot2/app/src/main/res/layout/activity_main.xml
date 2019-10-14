@@ -37,12 +37,15 @@
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/sjs360j"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+
+        android:visibility="invisible" />
+    <!--android:src="@drawable/sjs360j"-->
     <!--  android:layout_marginTop="490dp"-->
     <!--android:layout_height="990dp"-->
     <!--<LinearLayout-->

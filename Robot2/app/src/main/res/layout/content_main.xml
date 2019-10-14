@@ -40,10 +40,10 @@
             android:id="@+id/button_auto"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:background="@drawable/takephoto_new"
-
             android:layout_centerInParent="true"
-            />
+
+            android:background="@drawable/takephoto_new"
+            android:visibility="visible" />
     </LinearLayout>
 
     <LinearLayout

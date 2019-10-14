@@ -1,6 +1,7 @@
 package com.example.administrator.robot;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,14 +10,21 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -24,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,13 +69,30 @@ import com.iflytek.cloud.SynthesizerListener;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 
+
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.GrammarListener;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.LexiconListener;
+import com.iflytek.cloud.RecognizerListener;
+import com.iflytek.cloud.RecognizerResult;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechRecognizer;
+//import com.iflytek.speech.util.FucUtil;
+//import com.iflytek.speech.util.JsonParser;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 import android.media.AudioManager;
 import com.example.administrator.robot.database.db;
 
@@ -80,6 +106,9 @@ import android.widget.Toast;
 
 import com.example.administrator.robot.Tcpclient.Tcpclient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.LitePal;
 
 public class MainActivity extends AppCompatActivity {
@@ -111,26 +140,28 @@ public class MainActivity extends AppCompatActivity {
     public ImageView iv2;
     public static String geshi="mp4";
     //     public  String sit = Environment.getExternalStorageDirectory() + File.separator + "sit.mp4";
-    public  String sit = Environment.getExternalStorageDirectory() + File.separator + "sit."+geshi;
+    public  String sit ="/sdcard/"+ "sit."+geshi;
 
     // public String sit = "android.resource://" + getPackageName() + "/" + R.raw.sit;
 
     //    public  String standup_walk = Environment.getExternalStorageDirectory() + File.separator + "standup_walk.mp4";
-    public  String standup_walk = Environment.getExternalStorageDirectory() + File.separator + "standup_walk."+geshi;
+//    public  String standup_walk = Environment.getExternalStorageDirectory() + File.separator + "standup_walk."+geshi;
+    public  String standup_walk = "/sdcard/" + "standup_walk."+geshi;
+
     //public String standup_walk = "android.resource://" + getPackageName() + "/" + R.raw.standup_walk;
 
     //    public  String standby = Environment.getExternalStorageDirectory() + File.separator + "standby.mp4";
-    public  String standby = Environment.getExternalStorageDirectory() + File.separator + "standby."+geshi;
+    public  String standby = "/sdcard/" + "standby."+geshi;
 
     // public String standby = "android.resource://" + getPackageName() + "/" + R.raw.standby;
 
     //    public  String talk = Environment.getExternalStorageDirectory() + File.separator + "talk.mp4";
-    public  String talk = Environment.getExternalStorageDirectory() + File.separator + "talk."+geshi;
+    public  String talk = "/sdcard/" + "talk."+geshi;
 
     // public String talk = "android.resource://" + getPackageName() + "/" + R.raw.talk;
 
     //    public  String back_walk = Environment.getExternalStorageDirectory() + File.separator + "back_walk.mp4";
-    public  String back_walk = Environment.getExternalStorageDirectory() + File.separator + "back_walk."+geshi;
+    public  String back_walk = "/sdcard/" + "back_walk."+geshi;
     //  public String back_walk = "android.resource://" + getPackageName() + "/" + R.raw.back_walk;
 
     public int interval=30000;
@@ -145,6 +176,33 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView img_down;
     AnimationSet animationSet;
+    private SpeechRecognizer mAsr;
+    // 语音听写对象
+    private SpeechRecognizer mIat;
+    private boolean mTranslateEnable = false;
+    private String resultType = "json";
+    private StringBuffer buffer = new StringBuffer();
+    // 引擎类型
+    private String mEngineType = SpeechConstant.TYPE_CLOUD;
+
+
+    Handler han = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0x001) {
+                //   executeStream();
+            }
+        }
+    };
+    private boolean cyclic = false;//音频流识别是否循环调用
+
+   // private StringBuffer buffer = new StringBuffer();
+    // 用HashMap存储听写结果
+    private HashMap<String, String> mIatResults = new LinkedHashMap<String, String>();
+
+
     // private ImageView Hintbtn;
     //  private MainActivity mainActivity;
 
@@ -252,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void hideBottomUIMenu() {
+
         //隐藏虚拟按键，并且全屏
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
             View v = this.getWindow().getDecorView();
@@ -275,11 +334,14 @@ public class MainActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(dMetrics);
         int screenWidth =dMetrics.widthPixels;
         int screenHeight =dMetrics.heightPixels;
+
+
+
         if(screenWidth<1000){
             setContentView(R.layout.activity_main_small);
         }else{
-         //   setContentView(R.layout.activity_main_small);
-            setContentView(R.layout.activity_main);
+             setContentView(R.layout.activity_main_small);
+            //setContentView(R.layout.activity_main);
         }
         //   setContentView(R.layout.activity_main);
         hideBottomUIMenu();
@@ -392,7 +454,8 @@ public class MainActivity extends AppCompatActivity {
         }
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
+        Bitmap bmzhezhao=readBitMap(this,R.drawable.sjs360j);
+        iv2.setImageBitmap(bmzhezhao);
 
         handler_yincang = new Handler(){
             public void handleMessage(Message msg) {
@@ -500,7 +563,22 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+    /**
+     * 以最省内存的方式读取本地资源的图片
+     *
+     * @param context
+     * @param resId
+     * @return
+     */
+    public static Bitmap readBitMap(Context context, int resId) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
+        opt.inPurgeable = true;
+        opt.inInputShareable = true;
+        // 获取资源图片
+        InputStream is = context.getResources().openRawResource(resId);
+        return BitmapFactory.decodeStream(is, null, opt);
+    }
 
 
     public    void copayAssetsToSdCard() {
@@ -531,7 +609,7 @@ public class MainActivity extends AppCompatActivity {
                     Message msg1 = new Message();
                     msg1.what=9;
                 handler_yincang.sendMessage(msg1);
-                  //  iv2.setVisibility(View.INVISIBLE);
+                 //   iv2.setVisibility(View.INVISIBLE);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -576,7 +654,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(sjs_state=="standby"){
                     iv2.setVisibility(View.VISIBLE);
-                    new Thread(new mythread_yincang()).start();
+                   new Thread(new mythread_yincang()).start();
                     //return;
                 }else if (sjs_state=="talk"){
                     iv2.setVisibility(View.VISIBLE);
@@ -591,10 +669,12 @@ public class MainActivity extends AppCompatActivity {
                     new Thread(new mythread_yincang()).start();
                  //   return;
                 }
-                
-                mediaPlayer.stop();
+
+                //mediaPlayer.stop();
+               // mediaPlayer.pause();//新增
                 // mediaPlayer.release();
                 mediaPlayer.reset();
+
                 mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                 //设置需要播放的视频
                 mediaPlayer.setDataSource(path);
@@ -676,20 +756,55 @@ public class MainActivity extends AppCompatActivity {
 //                    //  return;
 //                }
 
-                //  Toast.makeText(this, "开始播放11", Toast.LENGTH_LONG).show();
+                 // Toast.makeText(this, "开始播放11", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 // TODO: handle exception
             }
         }
     }
     //屏蔽下拉菜单
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        // TODO Auto-generated method stub
-        super.onWindowFocusChanged(hasFocus);
-        sendBroadcast(new Intent("android.intent.action.CLOSE_SYSTEM_DIALOGS"));
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        // TODO Auto-generated method stub
+//        super.onWindowFocusChanged(hasFocus);
+//        sendBroadcast(new Intent("android.intent.action.CLOSE_SYSTEM_DIALOGS"));
+//        try {
+//            Object service = getSystemService("statusbar");
+//            Class<?> statusbarManager = Class
+//                    .forName("android.app.StatusBarManager");
+//            Method test = statusbarManager.getMethod("collapse");
+//            test.invoke(service);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//    }
+
+    private void disableStatusBars() {
+        Object service = getSystemService("statusbar");
+        try {
+            Class<?> statusBarManager = Class.forName
+                    ("android.app.StatusBarManager");
+            Method expand = statusBarManager.getMethod("disable", int.class);
+            expand.invoke(service, 0x00010000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        System.out.println("hasfocus--->>>" + hasFocus);
+//        super.onWindowFocusChanged(hasFocus);
+//        try {
+//            Object service = getSystemService("statusbar");
+//            Class<?> statusbarManager = Class
+//                    .forName("android.app.StatusBarManager");
+//            Method test = statusbarManager.getMethod("collapse");
+//            test.invoke(service);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -758,48 +873,94 @@ public class MainActivity extends AppCompatActivity {
 
             return;
         }
+        //maketext决定Toast显示内容
+        Toast toastCenter = Toast.makeText(getApplicationContext(),"请大声说出您的问题",Toast.LENGTH_LONG);
 
-        //反之不需要做判断直接下一步
-        //1.创建RecognizerDialog对象
-        RecognizerDialog mDialog = new RecognizerDialog(this, null);
-        //2.设置accent、language等参数
-        mDialog.setParameter(SpeechConstant.LANGUAGE, language);
-        mDialog.setParameter(SpeechConstant.ACCENT, "mandarin");
-        mDialog.setTitle("123");
-        //若要将UI控件用于语义理解， 必须添加以下参数设置， 设置之后onResult回调返回将是语义理解
-        //结果
-        //mDialog.setParameter("asr_sch", "1");
-        // mDialog.setParameter("nlp_version", "2.0");
-        sbuff = new StringBuffer();
-        //3.设置回调接口
-        mDialog.setListener(new RecognizerDialogListener() {
-            //最终的识别结果
-            @Override
-            public void onResult(RecognizerResult recognizerResult, boolean b) {
-                String result = recognizerResult.getResultString();
-                // tv1.setText("识别结果：" + recognizerResult.getResultString() + b);
-                String spreak_word = pareData(result);
-                sbuff.append(spreak_word+"  ");
-                if (b) {
-                    askContent = sbuff.toString();//得到最终结果
+        //setGravity决定Toast显示位置
+        toastCenter.setGravity(Gravity.CENTER,0,0);
 
-                    Log.e("HLS","用户："+askContent);
-                    TalkBean askBean = new TalkBean(askContent, -1, true);//初始化提问对象
-                    mlist.add(askBean);
-                    //刷新 listview
-                    answers="这个问题我们机器要开个会，等商量出来再告诉你";
-                    //调用图灵
-                    new GetMessage().start();
-                    //    play(path1);
-                }
-            }
-            @Override
-            public void onError(SpeechError speechError) {
+        //调用show使得toast得以显示
+        toastCenter.show();
+        mIat = SpeechRecognizer.createRecognizer(MainActivity.this, mInitListener);
 
-            }
-        });
-        //4.显示dialog，接收语音输入
-        mDialog.show();
+//设置语法ID和 SUBJECT 为空，以免因之前有语法调用而设置了此参数；或直接清空所有参数，具体可参考 DEMO 的示例。
+        mIat.setParameter( SpeechConstant.CLOUD_GRAMMAR, null );
+        mIat.setParameter( SpeechConstant.SUBJECT, null );
+//设置返回结果格式，目前支持json,xml以及plain 三种格式，其中plain为纯听写文本内容
+        mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
+//此处engineType为“cloud”
+        mIat.setParameter( SpeechConstant.ENGINE_TYPE, mEngineType );
+//设置语音输入语言，zh_cn为简体中文
+        mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
+//设置结果返回语言
+        mIat.setParameter(SpeechConstant.ACCENT, "mandarin");
+// 设置语音前端点:静音超时时间，单位ms，即用户多长时间不说话则当做超时处理
+//取值范围{1000～10000}
+        mIat.setParameter(SpeechConstant.VAD_BOS, "4000");
+//设置语音后端点:后端点静音检测时间，单位ms，即用户停止说话多长时间内即认为不再输入，
+//自动停止录音，范围{0~10000}
+        mIat.setParameter(SpeechConstant.VAD_EOS, "1000");
+//设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
+        mIat.setParameter(SpeechConstant.ASR_PTT,"1");
+
+//开始识别，并设置监听器
+        mIat.startListening(mRecognizerListener);
+// 初始化识别对象
+//        mAsr = SpeechRecognizer.createRecognizer(MainActivity.this, mInitListener);
+//        //反之不需要做判断直接下一步
+//        //1.创建RecognizerDialog对象
+//        RecognizerDialog mDialog = new RecognizerDialog(this, null);
+//        //2.设置accent、language等参数
+//        mDialog.setParameter(SpeechConstant.LANGUAGE, language);
+//        mDialog.setParameter(SpeechConstant.ACCENT, "mandarin");
+//        mDialog.setTitle("123");
+//        //若要将UI控件用于语义理解， 必须添加以下参数设置， 设置之后onResult回调返回将是语义理解
+//        //结果
+//
+//        sbuff = new StringBuffer();
+//        //3.设置回调接口
+//        mDialog.setListener(new RecognizerDialogListener() {
+//            //最终的识别结果
+//            @Override
+//            public void onResult(RecognizerResult recognizerResult, boolean b) {
+//                String result = recognizerResult.getResultString();
+//                String spreak_word = pareData(result);
+//                sbuff.append(spreak_word+"  ");
+//                if (b) {
+//                    askContent = sbuff.toString();//得到最终结果
+//
+//                    String cutstr=askContent.replaceAll("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
+//                    if(cutstr.equals("管理员82861903")){
+//                      compose("确认");
+//                        Intent intent= new Intent();
+//                        intent.setAction("android.intent.action.VIEW");
+//                       Uri content_url = Uri.parse("http://www.cnblogs.com");
+//                        intent.setData(content_url);
+//                        startActivity(intent);
+//                         finish();
+//                    }
+//                   else if(cutstr.equals("管理员82861903设置")){
+//                        Intent intent= new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                    showTip(cutstr);
+//                    Log.e("HLS","用户："+askContent);
+//                    TalkBean askBean = new TalkBean(askContent, -1, true);//初始化提问对象
+//                    mlist.add(askBean);
+//                    //刷新 listview
+//                    answers="这个问题我们机器要开个会，等商量出来再告诉你";
+//                    //调用图灵
+//                    new GetMessage().start();
+//                }
+//            }
+//            @Override
+//            public void onError(SpeechError speechError) {
+//
+//            }
+//        });
+//        //4.显示dialog，接收语音输入
+//        mDialog.show();
     }
 
     private String pareData(String _json) {
@@ -1054,7 +1215,7 @@ public class MainActivity extends AppCompatActivity {
             try{
                 msg.what=1;
                 message=new GetHttpMessage().testGetRequest(askContent);
-                //  Log.e("黄柳淞",message);
+                  Log.e("黄柳淞",message);
             }
             catch(Exception e){
                 e.printStackTrace();
@@ -1081,5 +1242,134 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+
+    private InitListener mInitListener = new InitListener() {
+
+        @Override
+        public void onInit(int code) {
+            //Log.d(TAG, "SpeechRecognizer init() code = " + code);
+            if (code != ErrorCode.SUCCESS) {
+                showTip("初始化失败,错误码："+code+",请点击网址https://www.xfyun.cn/document/error-code查询解决方案");
+            }
+        }
+    };
+    /**
+     * 听写监听器。
+     */
+    private RecognizerListener mRecognizerListener = new RecognizerListener() {
+
+        @Override
+        public void onBeginOfSpeech() {
+            // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
+            showTip("开始说话");
+        }
+
+        @Override
+        public void onError(SpeechError error) {
+            // Tips：
+            // 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
+            if(mTranslateEnable && error.getErrorCode() == 14002) {
+                showTip( error.getPlainDescription(true)+"\n请确认是否已开通翻译功能" );
+            } else {
+                showTip(error.getPlainDescription(true));
+            }
+        }
+
+        @Override
+        public void onEndOfSpeech() {
+            // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
+            showTip("结束说话");
+        }
+
+        @Override
+        public void onResult(RecognizerResult results, boolean isLast) {
+            Log.d("内容：===", results.getResultString());
+            String str = "[{'ws':'hahah''}]";
+            try {
+                JSONObject json = new JSONObject( results.getResultString());
+             //   Log.d("fuck",json.toString(1));
+               // Log.d("fuck2",json.getString("ws"));
+                JSONArray jsonarray1 = new JSONArray( json.getString("ws"));
+                jsonarray1=json.getJSONArray("ws");
+                Log.d("fuck2-1",String.valueOf(jsonarray1.length()));
+                askContent="";
+                for (int i = 0; i < jsonarray1.length(); i++) {
+                    JSONObject jobj=jsonarray1.getJSONObject(i);
+                    JSONArray w=jobj.getJSONArray("cw");
+                    JSONObject tmpstr= new JSONObject(w.get(0).toString());
+                    String ww=tmpstr.getString("w");
+                 //   Log.d("fuck3:"+String.valueOf(i),ww);
+                    askContent+=ww;
+//                    JSONObject value = jsonarray1.getJSONObject(0);
+//                    JSONArray valuearray=value.getJSONArray("cw");
+//                    JSONObject valueobj=valuearray.getJSONObject(i);
+                    //      Log.d("fuck3:"+String.valueOf(i),valueobj.getString("w"));
+                }
+                askContent=askContent.replaceAll("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
+                    if(askContent.length() <= 0){
+
+                    }else{
+                        Log.d("fuck3-1",askContent);
+                        TalkBean askBean = new TalkBean(askContent.toString(), -1, true);//初始化提问对象
+                    //     mlist.add(askBean);
+                        //刷新 listview
+                        answers="这个问题我们机器要开个会，等商量出来再告诉你";
+                        new GetMessage().start();
+                    }
+                //
+
+//                Log.d("fuck3",String.valueOf(json.getString("ws").length()));
+//
+//                JSONArray json2 = new JSONArray( json.getString("ws"));
+//                Log.d("fuck4-1", String.valueOf(json2.length()));
+//                //for  循环可以
+//                Log.d("fuck4-2", String.valueOf(json2.get(0).toString()));
+//                JSONObject json3 = new JSONObject(  String.valueOf(json2.get(0).toString()));
+//                Log.d("fuck4-3", json3.getString("cw").toString());
+//                JSONArray json4 = new JSONArray( json3.getString("cw").toString());
+//                Log.d("fuck4-4",    json4.get(0).toString());
+//                JSONObject json5 = new JSONObject( json4.get(0).toString());
+//                Log.d("fuck4-5",    json5.getString("w"));
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (resultType.equals("json")) {
+                if( mTranslateEnable ){
+                    //        printTransResult( reults );
+
+                }else{
+                    //      printResult(results);
+                }
+            }else if(resultType.equals("plain")) {
+                buffer.append(results.getResultString());
+                //  mResultText.setText(buffer.toString());
+                //    mResultText.setSelection(mResultText.length());
+            }
+
+            if (isLast & cyclic) {
+                // TODO 最后的结果
+                Message message = Message.obtain();
+                message.what = 0x001;
+                han.sendMessageDelayed(message,100);
+            }
+        }
+
+        @Override
+        public void onVolumeChanged(int volume, byte[] data) {
+            showTip("当前正在说话，音量大小：" + volume);
+            Log.d("9999", "返回音频数据："+data.length);
+        }
+
+        @Override
+        public void onEvent(int eventType, int arg1, int arg2, Bundle obj) {
+            // 以下代码用于获取与云端的会话id，当业务出错时将会话id提供给技术支持人员，可用于查询会话日志，定位出错原因
+            // 若使用本地能力，会话id为null
+            //	if (SpeechEvent.EVENT_SESSION_ID == eventType) {
+            //		String sid = obj.getString(SpeechEvent.KEY_EVENT_SESSION_ID);
+            //		Log.d(TAG, "session id =" + sid);
+            //	}
+        }
+    };
 
 }
